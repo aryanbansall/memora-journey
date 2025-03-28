@@ -42,7 +42,7 @@ const Timeline = ({ memories, onMemoryClick }: TimelineProps) => {
       {sortedDates.map((date) => (
         <div key={date} className="animate-fade-in">
           <div className="flex items-center gap-3 mb-4">
-            <div className="timeline-dot" />
+            <div className="timeline-dot w-3 h-3 rounded-full bg-primary" />
             <h2 className="text-lg font-medium">{date}</h2>
             <span className="text-sm text-muted-foreground">
               {getRelativeTime(date)}

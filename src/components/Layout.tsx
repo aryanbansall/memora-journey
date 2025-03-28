@@ -39,15 +39,16 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleNavigation = (path: string) => {
-    if (path !== '/') {
-      // For now, show toast for unimplemented pages
+    // Allow navigation to implemented pages
+    if (path === '/' || path === '/calendar' || path === '/favorites') {
+      navigate(path);
+    } else {
+      // For unimplemented pages
       toast({
         description: "This feature will be available soon!",
         duration: 3000
       });
-      return;
     }
-    navigate(path);
   };
 
   return (
