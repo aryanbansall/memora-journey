@@ -3,12 +3,10 @@ import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import MemoryCard, { Memory } from '@/components/MemoryCard';
 import MemoryDialog from '@/components/MemoryDialog';
-import { useToast } from '@/hooks/use-toast';
 import { useMemories } from '@/context/MemoryContext';
 
 const FavoritesPage = () => {
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
-  const { toast } = useToast();
   const { favoriteMemories } = useMemories();
   
   const handleMemoryClick = (memory: Memory) => {

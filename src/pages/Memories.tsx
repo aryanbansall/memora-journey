@@ -3,20 +3,17 @@ import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import MemoryCard, { Memory } from '@/components/MemoryCard';
 import MemoryDialog from '@/components/MemoryDialog';
-import { useMemories } from '@/context/MemoryContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Star, Award, CalendarDays, Filter, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { useMemories } from '@/context/MemoryContext';
 
 const MemoriesPage = () => {
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const { memories, favoriteMemories } = useMemories();
-  
-  // Get highlighted memories (those marked as highlight in our context)
-  const highlightedMemories = memories.filter(memory => memory.isHighlighted);
+  const { memories, favoriteMemories, highlightedMemories, toggleFavorite, toggleHighlight } = useMemories();
   
   // Filter memories based on search term
   const filteredMemories = memories.filter(memory => 
@@ -138,6 +135,26 @@ const MemoriesPage = () => {
                   </div>
                 )}
               </div>
+              
+              <div className="mt-8">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Memory Stories</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground mb-4">
+                      Create beautiful stories from your highlighted memories
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="bg-secondary/20 rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-secondary/30 transition-colors h-40">
+                        <div className="text-2xl mb-2">✨</div>
+                        <h3 className="font-medium">Create New Story</h3>
+                        <p className="text-sm text-muted-foreground mt-1">Combine your highlights into a story</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
           
@@ -164,26 +181,6 @@ const MemoriesPage = () => {
                     </p>
                   </div>
                 )}
-              </div>
-              
-              <div className="mt-8">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Memory Stories</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4">
-                      Create beautiful stories from your highlighted memories
-                    </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      <div className="bg-secondary/20 rounded-lg p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-secondary/30 transition-colors h-40">
-                        <div className="text-2xl mb-2">✨</div>
-                        <h3 className="font-medium">Create New Story</h3>
-                        <p className="text-sm text-muted-foreground mt-1">Combine your highlights into a story</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
             </div>
           </TabsContent>

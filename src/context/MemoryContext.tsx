@@ -11,6 +11,7 @@ const INITIAL_MEMORIES: Memory[] = [
     type: 'photo',
     thumbnail: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmVhY2h8ZW58MHx8MHx8fDA%3D',
     isFavorite: true,
+    isHighlighted: true,
     tags: ['beach', 'sunset', 'vacation'],
     location: 'Malibu, CA'
   },
@@ -21,6 +22,7 @@ const INITIAL_MEMORIES: Memory[] = [
     type: 'video',
     thumbnail: 'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bW91bnRhaW58ZW58MHx8MHx8fDA%3D',
     isFavorite: false,
+    isHighlighted: false,
     tags: ['mountains', 'hiking', 'adventure'],
     location: 'Rocky Mountains'
   },
@@ -31,6 +33,7 @@ const INITIAL_MEMORIES: Memory[] = [
     type: 'photo',
     thumbnail: 'https://images.unsplash.com/photo-1606787364406-a3cdf06c6d0c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhbWlseSUyMGRpbm5lcnxlbnwwfHwwfHx8MA%3D%3D',
     isFavorite: true,
+    isHighlighted: true,
     tags: ['family', 'dinner', 'home'],
     location: 'Home'
   },
@@ -41,6 +44,7 @@ const INITIAL_MEMORIES: Memory[] = [
     type: 'photo',
     thumbnail: 'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2l0eXxlbnwwfHwwfHx8MA%3D%3D',
     isFavorite: true,
+    isHighlighted: false,
     tags: ['city', 'night', 'lights'],
     location: 'New York, NY'
   },
@@ -51,6 +55,7 @@ const INITIAL_MEMORIES: Memory[] = [
     type: 'video',
     thumbnail: 'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmlydGhkYXl8ZW58MHx8MHx8fDA%3D',
     isFavorite: false,
+    isHighlighted: false,
     tags: ['birthday', 'party', 'celebration'],
     location: 'Home'
   },
@@ -61,6 +66,7 @@ const INITIAL_MEMORIES: Memory[] = [
     type: 'photo',
     thumbnail: 'https://images.unsplash.com/photo-1595351049677-b241d8a5a337?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Zmxvd2Vyc3xlbnwwfHwwfHx8MA%3D%3D',
     isFavorite: true,
+    isHighlighted: true,
     tags: ['garden', 'flowers', 'spring'],
     location: 'Backyard'
   },
@@ -71,6 +77,7 @@ const INITIAL_MEMORIES: Memory[] = [
     type: 'video',
     thumbnail: 'https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2l0eSUyMHN0cmVldHxlbnwwfHwwfHx8MA%3D%3D',
     isFavorite: false,
+    isHighlighted: false,
     tags: ['downtown', 'walk', 'city'],
     location: 'Seattle, WA'
   },
@@ -81,6 +88,7 @@ const INITIAL_MEMORIES: Memory[] = [
     type: 'video',
     thumbnail: 'https://images.unsplash.com/photo-1560807707-8cc77767d783?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZG9nfGVufDB8fDB8fHww',
     isFavorite: true,
+    isHighlighted: false,
     tags: ['pet', 'dog', 'play'],
     location: 'Park'
   }

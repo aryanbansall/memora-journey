@@ -62,7 +62,7 @@ const ProfilePage = () => {
               </Avatar>
               {isEditing && (
                 <button 
-                  onClick={() => toast({ description: "This feature will be available soon!", duration: 1500 })}
+                  onClick={() => toast({ description: "Photo upload functionality coming in next update!", duration: 1500 })}
                   className="text-sm text-primary underline"
                 >
                   Change Photo
