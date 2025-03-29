@@ -1,8 +1,9 @@
 
 import React from 'react';
-import { Star, Video, Image, MoreVertical, Calendar } from 'lucide-react';
+import { Star, Video, Image, MoreVertical, Calendar, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { useMemories } from '@/context/MemoryContext';
 
 export type Memory = {
   id: string;
@@ -11,6 +12,7 @@ export type Memory = {
   type: 'photo' | 'video';
   thumbnail: string;
   isFavorite: boolean;
+  isHighlighted?: boolean;
   tags: string[];
   location?: string;
 };
@@ -22,11 +24,22 @@ interface MemoryCardProps {
 
 const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
   const { toast } = useToast();
+  const { toggleFavorite, toggleHighlight } = useMemories();
   
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
+    toggleFavorite(memory.id);
     toast({
       description: `${memory.title} ${memory.isFavorite ? 'removed from' : 'added to'} favorites`,
+      duration: 1500,
+    });
+  };
+  
+  const handleToggleHighlight = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toggleHighlight(memory.id);
+    toast({
+      description: `${memory.title} ${memory.isHighlighted ? 'removed from' : 'added to'} highlights`,
       duration: 1500,
     });
   };
@@ -41,7 +54,7 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
 
   return (
     <div 
-      className="memory-card cursor-pointer"
+      className="memory-card cursor-pointer rounded-lg overflow-hidden bg-card border animate-fade-in hover:shadow-md transition-shadow"
       onClick={() => onClick?.(memory)}
     >
       <div className="relative aspect-video">
@@ -71,6 +84,18 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
           aria-label={memory.isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
           <Star size={18} fill={memory.isFavorite ? "currentColor" : "none"} />
+        </button>
+        
+        {/* Highlight button */}
+        <button 
+          className={cn(
+            "absolute top-2 right-10 p-1 rounded-full transition-colors",
+            memory.isHighlighted ? "text-purple-400" : "text-white hover:text-purple-300"
+          )}
+          onClick={handleToggleHighlight}
+          aria-label={memory.isHighlighted ? "Remove from highlights" : "Add to highlights"}
+        >
+          <Award size={18} fill={memory.isHighlighted ? "currentColor" : "none"} />
         </button>
         
         {/* Title and date */}

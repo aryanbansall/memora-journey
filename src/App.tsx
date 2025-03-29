@@ -8,24 +8,31 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Calendar from "./pages/Calendar";
 import Favorites from "./pages/Favorites";
+import Profile from "./pages/Profile";
+import Memories from "./pages/Memories";
+import { MemoryProvider } from "./context/MemoryContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="/favorites" element={<Favorites />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <MemoryProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="/favorites" element={<Favorites />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/memories" element={<Memories />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </MemoryProvider>
   </QueryClientProvider>
 );
 
