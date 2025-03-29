@@ -23,7 +23,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     { name: 'Home', path: '/', icon: <Home size={20} /> },
     { name: 'Calendar', path: '/calendar', icon: <Calendar size={20} /> },
     { name: 'Favorites', path: '/favorites', icon: <Star size={20} /> },
-    { name: 'Memories', path: '/memories', icon: <Camera size={20} /> },
+    { name: 'Highlights', path: '/memories', icon: <Camera size={20} /> },
     { name: 'Profile', path: '/profile', icon: <User size={20} /> },
     { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
   ];
@@ -55,7 +55,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className={cn("min-h-screen flex flex-col")}>
       {/* Header */}
-      <header className="border-b py-3 px-4 flex items-center justify-between bg-background">
+      <header className="border-b py-3 px-4 flex items-center justify-between bg-background sticky top-0 z-10">
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full bg-memora-purple flex items-center justify-center">
             <Camera size={18} className="text-white" />
@@ -102,14 +102,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 p-4 md:p-6 overflow-auto">
+        <main className="flex-1 p-4 md:p-6 overflow-auto pb-16 md:pb-6">
           {children}
         </main>
       </div>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation - Fixed to bottom */}
       {isMobile && (
-        <nav className="border-t p-2 flex justify-around bg-background">
+        <nav className="border-t p-2 flex justify-around bg-background fixed bottom-0 left-0 right-0 z-10">
           {navItems.slice(0, 5).map((item) => (
             <button
               key={item.name}
