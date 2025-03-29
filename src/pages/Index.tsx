@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import Layout from '@/components/Layout';
-import MemoryCard from '@/components/MemoryCard';
+import MemoryCard, { Memory } from '@/components/MemoryCard';
 import MemoryDialog from '@/components/MemoryDialog';
 import Timeline from '@/components/Timeline';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
