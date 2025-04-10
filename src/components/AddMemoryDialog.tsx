@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { CalendarIcon, X, ImageIcon, Upload, Tag as TagIcon } from 'lucide-react';
@@ -56,12 +55,11 @@ const AddMemoryDialog = ({ isOpen, onClose }: AddMemoryDialogProps) => {
       return;
     }
 
-    // Create a new memory
     const newMemory = {
       id: `mem-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       title,
       date: format(date, 'yyyy-MM-dd'),
-      type: 'photo',
+      type: 'photo' as const,
       thumbnail: uploadedImages[0],
       images: uploadedImages,
       isFavorite: false,
@@ -78,7 +76,6 @@ const AddMemoryDialog = ({ isOpen, onClose }: AddMemoryDialogProps) => {
       duration: 3000,
     });
 
-    // Reset form and close dialog
     resetForm();
     onClose();
   };
@@ -94,9 +91,7 @@ const AddMemoryDialog = ({ isOpen, onClose }: AddMemoryDialogProps) => {
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Simulating image upload - in a real app, you'd process the actual files
     if (e.target.files && e.target.files.length > 0) {
-      // For demo purposes, we'll use placeholder images
       const placeholderImages = [
         'https://images.unsplash.com/photo-1609921141835-710b7fa6e438?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGhvdG8lMjBhbGJ1bXxlbnwwfHwwfHx8MA%3D%3D',
         'https://images.unsplash.com/photo-1591715217098-98ff4daec9e7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8cGhvdG8lMjBhbGJ1bXxlbnwwfHwwfHx8MA%3D%3D',
@@ -126,7 +121,6 @@ const AddMemoryDialog = ({ isOpen, onClose }: AddMemoryDialogProps) => {
         </DialogHeader>
         
         <div className="grid gap-4 py-4">
-          {/* Title input */}
           <div className="grid grid-cols-4 items-center gap-4">
             <label htmlFor="title" className="text-right text-sm font-medium">
               Title
@@ -141,7 +135,6 @@ const AddMemoryDialog = ({ isOpen, onClose }: AddMemoryDialogProps) => {
             />
           </div>
           
-          {/* Date picker */}
           <div className="grid grid-cols-4 items-center gap-4">
             <label className="text-right text-sm font-medium">
               Date
@@ -173,7 +166,6 @@ const AddMemoryDialog = ({ isOpen, onClose }: AddMemoryDialogProps) => {
             </div>
           </div>
           
-          {/* Location input */}
           <div className="grid grid-cols-4 items-center gap-4">
             <label htmlFor="location" className="text-right text-sm font-medium">
               Location
@@ -187,7 +179,6 @@ const AddMemoryDialog = ({ isOpen, onClose }: AddMemoryDialogProps) => {
             />
           </div>
           
-          {/* Tags input */}
           <div className="grid grid-cols-4 items-center gap-4">
             <label htmlFor="tags" className="text-right text-sm font-medium">
               Tags
@@ -207,7 +198,6 @@ const AddMemoryDialog = ({ isOpen, onClose }: AddMemoryDialogProps) => {
             </div>
           </div>
           
-          {/* Display entered tags */}
           {tags.length > 0 && (
             <div className="grid grid-cols-4 items-center gap-4">
               <div></div>
@@ -227,7 +217,6 @@ const AddMemoryDialog = ({ isOpen, onClose }: AddMemoryDialogProps) => {
             </div>
           )}
           
-          {/* Description textarea */}
           <div className="grid grid-cols-4 items-center gap-4">
             <label htmlFor="description" className="text-right text-sm font-medium">
               Description
@@ -242,7 +231,6 @@ const AddMemoryDialog = ({ isOpen, onClose }: AddMemoryDialogProps) => {
             />
           </div>
           
-          {/* Image upload */}
           <div className="grid grid-cols-4 items-start gap-4">
             <label className="text-right text-sm font-medium">
               Images
@@ -269,7 +257,6 @@ const AddMemoryDialog = ({ isOpen, onClose }: AddMemoryDialogProps) => {
                 </div>
               </label>
               
-              {/* Preview uploaded images */}
               {uploadedImages.length > 0 && (
                 <div className="grid grid-cols-3 gap-2 mt-3">
                   {uploadedImages.map((img, index) => (
