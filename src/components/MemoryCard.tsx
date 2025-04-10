@@ -1,10 +1,16 @@
 
-import React from 'react';
-import { Star, Video, Image, MoreVertical, Calendar, Award, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Star, Video, Image, Calendar, Award, Trash2, MoreVertical } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useMemories } from '@/context/MemoryContext';
 import { useNavigate } from 'react-router-dom';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export type Memory = {
   id: string;
@@ -16,6 +22,7 @@ export type Memory = {
   isHighlighted?: boolean;
   tags: string[];
   location?: string;
+  images?: string[]; // Additional images for carousel
 };
 
 interface MemoryCardProps {
@@ -27,6 +34,29 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { toggleFavorite, toggleHighlight, deleteMemory } = useMemories();
+  const [currentImage, setCurrentImage] = useState(memory.thumbnail);
+  const [isHovering, setIsHovering] = useState(false);
+  const [imageIndex, setImageIndex] = useState(0);
+  
+  // Create an array of images for the carousel (use thumbnail as fallback)
+  const images = memory.images?.length ? memory.images : [memory.thumbnail];
+  
+  // Handle image rotation on hover
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    
+    if (isHovering && images.length > 1) {
+      interval = setInterval(() => {
+        const nextIndex = (imageIndex + 1) % images.length;
+        setImageIndex(nextIndex);
+        setCurrentImage(images[nextIndex]);
+      }, 1500);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isHovering, imageIndex, images]);
   
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -49,6 +79,10 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
   const handleDeleteMemory = (e: React.MouseEvent) => {
     e.stopPropagation();
     deleteMemory(memory.id);
+    toast({
+      description: "Memory moved to Recently Deleted",
+      duration: 1500,
+    });
   };
   
   const handleTagClick = (e: React.MouseEvent, tag: string) => {
@@ -60,12 +94,18 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
     <div 
       className="memory-card cursor-pointer rounded-lg overflow-hidden bg-card border animate-fade-in hover:shadow-md transition-shadow"
       onClick={() => onClick?.(memory)}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => {
+        setIsHovering(false);
+        setImageIndex(0);
+        setCurrentImage(memory.thumbnail);
+      }}
     >
       <div className="relative aspect-video">
         <img 
-          src={memory.thumbnail} 
+          src={currentImage} 
           alt={memory.title}
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover transition-opacity duration-300"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50" />
         
@@ -78,38 +118,38 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
           )}
         </div>
         
-        {/* Favorite button */}
-        <button 
-          className={cn(
-            "absolute top-2 right-2 p-1 rounded-full transition-colors",
-            memory.isFavorite ? "text-yellow-400" : "text-white hover:text-yellow-300"
-          )}
-          onClick={handleToggleFavorite}
-          aria-label={memory.isFavorite ? "Remove from favorites" : "Add to favorites"}
-        >
-          <Star size={18} fill={memory.isFavorite ? "currentColor" : "none"} />
-        </button>
-        
-        {/* Highlight button */}
-        <button 
-          className={cn(
-            "absolute top-2 right-10 p-1 rounded-full transition-colors",
-            memory.isHighlighted ? "text-purple-400" : "text-white hover:text-purple-300"
-          )}
-          onClick={handleToggleHighlight}
-          aria-label={memory.isHighlighted ? "Remove from highlights" : "Add to highlights"}
-        >
-          <Award size={18} fill={memory.isHighlighted ? "currentColor" : "none"} />
-        </button>
-        
-        {/* Delete button */}
-        <button 
-          className="absolute top-2 right-18 p-1 rounded-full text-white hover:text-red-400 transition-colors"
-          onClick={handleDeleteMemory}
-          aria-label="Delete memory"
-        >
-          <Trash2 size={18} />
-        </button>
+        {/* Three-dot dropdown menu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              onClick={(e) => e.stopPropagation()} 
+              className="absolute top-2 right-2 p-1 rounded-full text-white hover:bg-white/20 transition-colors"
+              aria-label="Options"
+            >
+              <MoreVertical size={16} />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuItem onClick={handleToggleFavorite}>
+              <Star size={16} className={cn(
+                "mr-2",
+                memory.isFavorite && "text-yellow-400 fill-yellow-400"
+              )} />
+              {memory.isFavorite ? "Remove favorite" : "Add to favorites"}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleToggleHighlight}>
+              <Award size={16} className={cn(
+                "mr-2",
+                memory.isHighlighted && "text-purple-400 fill-purple-400"
+              )} />
+              {memory.isHighlighted ? "Remove highlight" : "Add to highlights"}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDeleteMemory} className="text-destructive">
+              <Trash2 size={16} className="mr-2" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         
         {/* Title and date */}
         <div className="absolute bottom-0 left-0 w-full p-3 text-white">
@@ -119,21 +159,6 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
             <span>{memory.date}</span>
           </div>
         </div>
-        
-        {/* More options */}
-        <button 
-          className="absolute bottom-2 right-2 p-1 text-white rounded-full hover:bg-white/20"
-          onClick={(e) => {
-            e.stopPropagation();
-            toast({
-              description: "Options menu will be available soon!",
-              duration: 1500,
-            });
-          }}
-          aria-label="More options"
-        >
-          <MoreVertical size={16} />
-        </button>
       </div>
       
       {/* Tags */}

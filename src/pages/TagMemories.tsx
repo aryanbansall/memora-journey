@@ -3,10 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { useMemories } from '@/context/MemoryContext';
-import MemoryCard from '@/components/MemoryCard';
+import MemoryCard, { Memory } from '@/components/MemoryCard';
 import MemoryDialog from '@/components/MemoryDialog';
-import { Memory } from '@/components/MemoryCard';
-import { Tag, ArrowLeft } from 'lucide-react';
+import AddMemoryDialog from '@/components/AddMemoryDialog';
+import { Tag, ArrowLeft, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,6 +14,7 @@ const TagMemoriesPage = () => {
   const { tag } = useParams<{ tag: string }>();
   const { getMemoriesByTag } = useMemories();
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const navigate = useNavigate();
   const [memories, setMemories] = useState<Memory[]>([]);
   
@@ -95,11 +96,24 @@ const TagMemoriesPage = () => {
           </div>
         )}
         
+        {/* Add new memory floating button */}
+        <Button
+          className="fixed bottom-20 right-6 sm:bottom-6 sm:right-6 rounded-full h-14 w-14 shadow-lg"
+          onClick={() => setIsAddDialogOpen(true)}
+        >
+          <Plus size={24} />
+        </Button>
+        
         <MemoryDialog 
           memory={selectedMemory} 
           onClose={handleCloseDialog}
           onNext={handleNextMemory}
           onPrevious={handlePreviousMemory}
+        />
+        
+        <AddMemoryDialog
+          isOpen={isAddDialogOpen}
+          onClose={() => setIsAddDialogOpen(false)}
         />
       </div>
     </Layout>

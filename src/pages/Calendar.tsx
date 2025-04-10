@@ -6,6 +6,7 @@ import { Calendar } from '@/components/ui/calendar';
 import MemoryCard, { Memory } from '@/components/MemoryCard';
 import MemoryDialog from '@/components/MemoryDialog';
 import { useMemories } from '@/context/MemoryContext';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -46,6 +47,12 @@ const CalendarPage = () => {
     return memories.some(memory => memory.date === dateStr);
   };
   
+  // Get memories for a specific date
+  const getMemoriesForDay = (date: Date) => {
+    const dateStr = format(date, 'yyyy-MM-dd');
+    return getMemoriesByDate(dateStr);
+  };
+  
   // Open first memory on date selection if there are memories
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
@@ -56,6 +63,44 @@ const CalendarPage = () => {
         setSelectedMemory(dateMemories[0]);
       }
     }
+  };
+
+  // Custom component for calendar days to add memory hover cards
+  const renderDay = (day: Date) => {
+    const dayMemories = getMemoriesForDay(day);
+    if (dayMemories.length === 0) return null;
+    
+    return (
+      <HoverCard>
+        <HoverCardTrigger asChild>
+          <div className="w-full h-full flex items-center justify-center">
+            {format(day, 'd')}
+          </div>
+        </HoverCardTrigger>
+        <HoverCardContent className="w-72 p-2">
+          <div className="text-sm font-medium mb-2">{format(day, 'MMMM d, yyyy')}</div>
+          <div className="text-xs text-muted-foreground mb-2">
+            {dayMemories.length} {dayMemories.length === 1 ? 'memory' : 'memories'}
+          </div>
+          {dayMemories.length > 0 && (
+            <div className="w-full h-24 relative rounded-md overflow-hidden cursor-pointer"
+                 onClick={() => {
+                   setSelectedDate(day);
+                   setSelectedMemory(dayMemories[0]);
+                 }}>
+              <img 
+                src={dayMemories[0].thumbnail} 
+                alt={dayMemories[0].title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                <p className="text-white text-xs font-medium">{dayMemories[0].title}</p>
+              </div>
+            </div>
+          )}
+        </HoverCardContent>
+      </HoverCard>
+    );
   };
 
   return (
@@ -82,6 +127,9 @@ const CalendarPage = () => {
                     color: 'var(--memora-purple)',
                     borderRadius: '4px'
                   }
+                }}
+                components={{
+                  DayContent: ({ date }) => renderDay(date)
                 }}
               />
             </div>

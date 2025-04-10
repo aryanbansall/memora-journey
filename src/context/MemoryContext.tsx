@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState } from 'react';
 import { Memory } from '@/components/MemoryCard';
 import { useToast } from '@/hooks/use-toast';
@@ -14,7 +13,12 @@ const INITIAL_MEMORIES: Memory[] = [
     isFavorite: true,
     isHighlighted: true,
     tags: ['beach', 'sunset', 'vacation'],
-    location: 'Malibu, CA'
+    location: 'Malibu, CA',
+    images: [
+      'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmVhY2h8ZW58MHx8MHx8fDA%3D',
+      'https://images.unsplash.com/photo-1520942702018-0862200e6873?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YmVhY2glMjBzdW5zZXR8ZW58MHx8MHx8fDA%3D',
+      'https://images.unsplash.com/photo-1506953823976-52e1fdc0149a?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmVhY2glMjBzdW5zZXR8ZW58MHx8MHx8fDA%3D'
+    ]
   },
   {
     id: '2',
@@ -25,7 +29,12 @@ const INITIAL_MEMORIES: Memory[] = [
     isFavorite: false,
     isHighlighted: false,
     tags: ['mountains', 'hiking', 'adventure'],
-    location: 'Rocky Mountains'
+    location: 'Rocky Mountains',
+    images: [
+      'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bW91bnRhaW58ZW58MHx8MHx8fDA%3D',
+      'https://images.unsplash.com/photo-1464278533981-50106e6176b1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bW91bnRhaW4lMjBoaWtlfGVufDB8fDB8fHww',
+      'https://images.unsplash.com/photo-1551632811-561732d1e306?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bW91bnRhaW4lMjBoaWtlfGVufDB8fDB8fHww'
+    ]
   },
   {
     id: '3',
@@ -36,7 +45,12 @@ const INITIAL_MEMORIES: Memory[] = [
     isFavorite: true,
     isHighlighted: true,
     tags: ['family', 'dinner', 'home'],
-    location: 'Home'
+    location: 'Home',
+    images: [
+      'https://images.unsplash.com/photo-1606787364406-a3cdf06c6d0c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhbWlseSUyMGRpbm5lcnxlbnwwfHwwfHx8MA%3D%3D',
+      'https://images.unsplash.com/photo-1606787364406-a3cdf06c6d0c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhbWlseSUyMGRpbm5lcnxlbnwwfHwwfHx8MA%3D%3D',
+      'https://images.unsplash.com/photo-1606787364406-a3cdf06c6d0c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhbWlseSUyMGRpbm5lcnxlbnwwfHwwfHx8MA%3D%3D'
+    ]
   },
   {
     id: '4',
@@ -47,7 +61,12 @@ const INITIAL_MEMORIES: Memory[] = [
     isFavorite: true,
     isHighlighted: false,
     tags: ['city', 'night', 'lights'],
-    location: 'New York, NY'
+    location: 'New York, NY',
+    images: [
+      'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2l0eXxlbnwwfHwwfHx8MA%3D%3D',
+      'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2l0eXxlbnwwfHwwfHx8MA%3D%3D',
+      'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2l0eXxlbnwwfHwwfHx8MA%3D%3D'
+    ]
   },
   {
     id: '5',
@@ -58,7 +77,12 @@ const INITIAL_MEMORIES: Memory[] = [
     isFavorite: false,
     isHighlighted: false,
     tags: ['birthday', 'party', 'celebration'],
-    location: 'Home'
+    location: 'Home',
+    images: [
+      'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmlydGhkYXl8ZW58MHx8MHx8fDA%3D',
+      'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmlydGhkYXl8ZW58MHx8MHx8fDA%3D',
+      'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmlydGhkYXl8ZW58MHx8MHx8fDA%3D'
+    ]
   },
   {
     id: '6',
@@ -69,18 +93,28 @@ const INITIAL_MEMORIES: Memory[] = [
     isFavorite: true,
     isHighlighted: true,
     tags: ['garden', 'flowers', 'spring'],
-    location: 'Backyard'
+    location: 'Backyard',
+    images: [
+      'https://images.unsplash.com/photo-1595351049677-b241d8a5a337?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Zmxvd2Vyc3xlbnwwfHwwfHx8MA%3D%3D',
+      'https://images.unsplash.com/photo-1595351049677-b241d8a5a337?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Zmxvd2Vyc3xlbnwwfHwwfHx8MA%3D%3D',
+      'https://images.unsplash.com/photo-1595351049677-b241d8a5a337?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Zmxvd2Vyc3xlbnwwfHwwfHx8MA%3D%3D'
+    ]
   },
   {
     id: '7',
     title: 'Downtown Walk',
     date: '2023-06-10',
     type: 'video',
-    thumbnail: 'https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2l0eSUyMHN0cmVldHxlbnwwfHwwfHx8MA%3D%3D',
+    thumbnail: 'https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2l0eXxlbnwwfHwwfHx8MA%3D%3D',
     isFavorite: false,
     isHighlighted: false,
     tags: ['downtown', 'walk', 'city'],
-    location: 'Seattle, WA'
+    location: 'Seattle, WA',
+    images: [
+      'https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2l0eXxlbnwwfHwwfHx8MA%3D%3D',
+      'https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2l0eXxlbnwwfHwwfHx8MA%3D%3D',
+      'https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2l0eXxlbnwwfHwwfHx8MA%3D%3D'
+    ]
   },
   {
     id: '8',
@@ -91,7 +125,12 @@ const INITIAL_MEMORIES: Memory[] = [
     isFavorite: true,
     isHighlighted: false,
     tags: ['pet', 'dog', 'play'],
-    location: 'Park'
+    location: 'Park',
+    images: [
+      'https://images.unsplash.com/photo-1560807707-8cc77767d783?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZG9nfGVufDB8fDB8fHww',
+      'https://images.unsplash.com/photo-1560807707-8cc77767d783?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZG9nfGVufDB8fDB8fHww',
+      'https://images.unsplash.com/photo-1560807707-8cc77767d783?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8ZG9nfGVufDB8fDB8fHww'
+    ]
   }
 ];
 
@@ -107,6 +146,7 @@ interface MemoryContextType {
   permanentlyDeleteMemory: (id: string) => void;
   getMemoriesByTag: (tag: string) => Memory[];
   getMemoriesByDate: (date: string) => Memory[];
+  addMemory: (memory: Memory) => void;
 }
 
 const MemoryContext = createContext<MemoryContextType | undefined>(undefined);
@@ -191,6 +231,10 @@ export const MemoryProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const getMemoriesByDate = (date: string) => {
     return memories.filter(memory => memory.date === date);
   };
+  
+  const addMemory = (memory: Memory) => {
+    setMemories(prevMemories => [memory, ...prevMemories]);
+  };
 
   return (
     <MemoryContext.Provider value={{ 
@@ -204,7 +248,8 @@ export const MemoryProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       restoreMemory,
       permanentlyDeleteMemory,
       getMemoriesByTag,
-      getMemoriesByDate
+      getMemoriesByDate,
+      addMemory
     }}>
       {children}
     </MemoryContext.Provider>
