@@ -1,9 +1,10 @@
 
 import React from 'react';
-import { Star, Video, Image, MoreVertical, Calendar, Award } from 'lucide-react';
+import { Star, Video, Image, MoreVertical, Calendar, Award, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useMemories } from '@/context/MemoryContext';
+import { useNavigate } from 'react-router-dom';
 
 export type Memory = {
   id: string;
@@ -24,7 +25,8 @@ interface MemoryCardProps {
 
 const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
   const { toast } = useToast();
-  const { toggleFavorite, toggleHighlight } = useMemories();
+  const navigate = useNavigate();
+  const { toggleFavorite, toggleHighlight, deleteMemory } = useMemories();
   
   const handleToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -44,12 +46,14 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
     });
   };
   
-  const handleMoreOptions = (e: React.MouseEvent) => {
+  const handleDeleteMemory = (e: React.MouseEvent) => {
     e.stopPropagation();
-    toast({
-      description: "Options menu will be available soon!",
-      duration: 1500,
-    });
+    deleteMemory(memory.id);
+  };
+  
+  const handleTagClick = (e: React.MouseEvent, tag: string) => {
+    e.stopPropagation();
+    navigate(`/tag/${encodeURIComponent(tag)}`);
   };
 
   return (
@@ -98,6 +102,15 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
           <Award size={18} fill={memory.isHighlighted ? "currentColor" : "none"} />
         </button>
         
+        {/* Delete button */}
+        <button 
+          className="absolute top-2 right-18 p-1 rounded-full text-white hover:text-red-400 transition-colors"
+          onClick={handleDeleteMemory}
+          aria-label="Delete memory"
+        >
+          <Trash2 size={18} />
+        </button>
+        
         {/* Title and date */}
         <div className="absolute bottom-0 left-0 w-full p-3 text-white">
           <h3 className="font-medium text-sm truncate">{memory.title}</h3>
@@ -110,7 +123,13 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
         {/* More options */}
         <button 
           className="absolute bottom-2 right-2 p-1 text-white rounded-full hover:bg-white/20"
-          onClick={handleMoreOptions}
+          onClick={(e) => {
+            e.stopPropagation();
+            toast({
+              description: "Options menu will be available soon!",
+              duration: 1500,
+            });
+          }}
           aria-label="More options"
         >
           <MoreVertical size={16} />
@@ -123,7 +142,8 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
           {memory.tags.map((tag) => (
             <span 
               key={tag} 
-              className="inline-block bg-secondary text-xs px-2 py-0.5 rounded-full"
+              className="inline-block bg-secondary text-xs px-2 py-0.5 rounded-full cursor-pointer hover:bg-secondary/70"
+              onClick={(e) => handleTagClick(e, tag)}
             >
               {tag}
             </span>

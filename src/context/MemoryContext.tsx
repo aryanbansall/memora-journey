@@ -1,6 +1,7 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { Memory } from '@/components/MemoryCard';
+import { useToast } from '@/hooks/use-toast';
 
 // Mock data for memories
 const INITIAL_MEMORIES: Memory[] = [
@@ -98,14 +99,22 @@ interface MemoryContextType {
   memories: Memory[];
   favoriteMemories: Memory[];
   highlightedMemories: Memory[];
+  deletedMemories: Memory[];
   toggleFavorite: (id: string) => void;
   toggleHighlight: (id: string) => void;
+  deleteMemory: (id: string) => void;
+  restoreMemory: (id: string) => void;
+  permanentlyDeleteMemory: (id: string) => void;
+  getMemoriesByTag: (tag: string) => Memory[];
+  getMemoriesByDate: (date: string) => Memory[];
 }
 
 const MemoryContext = createContext<MemoryContextType | undefined>(undefined);
 
 export const MemoryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [memories, setMemories] = useState<Memory[]>(INITIAL_MEMORIES);
+  const [deletedMemories, setDeletedMemories] = useState<Memory[]>([]);
+  const { toast } = useToast();
   
   const favoriteMemories = memories.filter(memory => memory.isFavorite);
   const highlightedMemories = memories.filter(memory => memory.isHighlighted);
@@ -129,14 +138,73 @@ export const MemoryProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       )
     );
   };
+  
+  const deleteMemory = (id: string) => {
+    const memoryToDelete = memories.find(memory => memory.id === id);
+    
+    if (memoryToDelete) {
+      // Remove from active memories
+      setMemories(prevMemories => prevMemories.filter(memory => memory.id !== id));
+      
+      // Add to deleted memories
+      setDeletedMemories(prevDeleted => [...prevDeleted, memoryToDelete]);
+      
+      toast({
+        description: "Memory moved to Recently Deleted",
+        duration: 3000,
+      });
+    }
+  };
+  
+  const restoreMemory = (id: string) => {
+    const memoryToRestore = deletedMemories.find(memory => memory.id === id);
+    
+    if (memoryToRestore) {
+      // Remove from deleted memories
+      setDeletedMemories(prevDeleted => prevDeleted.filter(memory => memory.id !== id));
+      
+      // Add back to active memories
+      setMemories(prevMemories => [...prevMemories, memoryToRestore]);
+      
+      toast({
+        description: "Memory restored successfully",
+        duration: 3000,
+      });
+    }
+  };
+  
+  const permanentlyDeleteMemory = (id: string) => {
+    setDeletedMemories(prevDeleted => prevDeleted.filter(memory => memory.id !== id));
+    
+    toast({
+      description: "Memory permanently deleted",
+      duration: 3000,
+    });
+  };
+  
+  const getMemoriesByTag = (tag: string) => {
+    return memories.filter(memory => 
+      memory.tags.some(t => t.toLowerCase() === tag.toLowerCase())
+    );
+  };
+  
+  const getMemoriesByDate = (date: string) => {
+    return memories.filter(memory => memory.date === date);
+  };
 
   return (
     <MemoryContext.Provider value={{ 
       memories, 
       favoriteMemories, 
       highlightedMemories,
+      deletedMemories,
       toggleFavorite, 
-      toggleHighlight 
+      toggleHighlight,
+      deleteMemory,
+      restoreMemory,
+      permanentlyDeleteMemory,
+      getMemoriesByTag,
+      getMemoriesByDate
     }}>
       {children}
     </MemoryContext.Provider>

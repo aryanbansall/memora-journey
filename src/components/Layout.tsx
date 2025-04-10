@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Sun, Moon, Home, Calendar, Star, User, Settings, Camera, Grid2X2 } from 'lucide-react';
+import { Sun, Moon, Home, Calendar, Star, Settings, Camera, Grid2X2, MoreHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useToast } from '@/hooks/use-toast';
@@ -24,7 +24,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     { name: 'Calendar', path: '/calendar', icon: <Calendar size={20} /> },
     { name: 'Favorites', path: '/favorites', icon: <Star size={20} /> },
     { name: 'Highlights', path: '/memories', icon: <Camera size={20} /> },
-    { name: 'Profile', path: '/profile', icon: <User size={20} /> },
     { name: 'Settings', path: '/settings', icon: <Settings size={20} /> },
   ];
 
@@ -39,17 +38,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleNavigation = (path: string) => {
-    // Allow navigation to all implemented pages
-    if (path === '/' || path === '/calendar' || path === '/favorites' || 
-        path === '/memories' || path === '/profile') {
-      navigate(path);
-    } else {
-      // For unimplemented pages (only settings now)
-      toast({
-        description: "This feature will be available soon!",
-        duration: 3000
-      });
-    }
+    navigate(path);
   };
 
   return (
@@ -102,7 +91,10 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 p-4 md:p-6 overflow-auto pb-16 md:pb-6">
+        <main className={cn(
+          "flex-1 p-4 md:p-6 overflow-auto",
+          isMobile ? "pb-20" : "pb-6" // Add extra padding at bottom on mobile for nav bar
+        )}>
           {children}
         </main>
       </div>
@@ -110,13 +102,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       {/* Mobile Navigation - Fixed to bottom */}
       {isMobile && (
         <nav className="border-t p-2 flex justify-around bg-background fixed bottom-0 left-0 right-0 z-10">
-          {navItems.slice(0, 5).map((item) => (
+          {navItems.map((item) => (
             <button
               key={item.name}
               onClick={() => handleNavigation(item.path)}
               className={cn(
                 "p-2 rounded-md flex flex-col items-center",
-                location.pathname === item.path && "text-primary"
+                location.pathname === item.path ? "text-primary" : "text-foreground/70"
               )}
             >
               {item.icon}

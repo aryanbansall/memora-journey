@@ -10,6 +10,8 @@ import Calendar from "./pages/Calendar";
 import Favorites from "./pages/Favorites";
 import Profile from "./pages/Profile";
 import Memories from "./pages/Memories";
+import Settings from "./pages/Settings";
+import TagMemories from "./pages/TagMemories";
 import { MemoryProvider } from "./context/MemoryContext";
 
 const queryClient = new QueryClient();
@@ -25,8 +27,9 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/favorites" element={<Favorites />} />
-            <Route path="/profile" element={<Profile />} />
             <Route path="/memories" element={<Memories />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/tag/:tag" element={<TagMemories />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -5,60 +5,16 @@ import Layout from '@/components/Layout';
 import { Calendar } from '@/components/ui/calendar';
 import MemoryCard, { Memory } from '@/components/MemoryCard';
 import MemoryDialog from '@/components/MemoryDialog';
-import { useToast } from '@/hooks/use-toast';
-
-// Filter from the mock memories (these would come from an API in a real app)
-const CALENDAR_MEMORIES: Memory[] = [
-  {
-    id: '1',
-    title: 'Beach Sunset',
-    date: '2023-07-15',
-    type: 'photo',
-    thumbnail: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8YmVhY2h8ZW58MHx8MHx8fDA%3D',
-    isFavorite: true,
-    tags: ['beach', 'sunset', 'vacation'],
-    location: 'Malibu, CA'
-  },
-  {
-    id: '3',
-    title: 'Family Dinner',
-    date: '2023-07-05',
-    type: 'photo',
-    thumbnail: 'https://images.unsplash.com/photo-1606787364406-a3cdf06c6d0c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhbWlseSUyMGRpbm5lcnxlbnwwfHwwfHx8MA%3D%3D',
-    isFavorite: false,
-    tags: ['family', 'dinner', 'home'],
-    location: 'Home'
-  },
-  {
-    id: '5',
-    title: 'Birthday Party',
-    date: '2023-06-20',
-    type: 'video',
-    thumbnail: 'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmlydGhkYXl8ZW58MHx8MHx8fDA%3D',
-    isFavorite: false,
-    tags: ['birthday', 'party', 'celebration'],
-    location: 'Home'
-  },
-  {
-    id: '7',
-    title: 'Downtown Walk',
-    date: '2023-06-10',
-    type: 'video',
-    thumbnail: 'https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y2l0eSUyMHN0cmVldHxlbnwwfHwwfHx8MA%3D%3D',
-    isFavorite: false,
-    tags: ['downtown', 'walk', 'city'],
-    location: 'Seattle, WA'
-  }
-];
+import { useMemories } from '@/context/MemoryContext';
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
-  const { toast } = useToast();
+  const { memories, getMemoriesByDate } = useMemories();
   
   // Group memories by date for the selected day
   const selectedDateStr = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
-  const memoriesForSelectedDate = CALENDAR_MEMORIES.filter(memory => memory.date === selectedDateStr);
+  const memoriesForSelectedDate = getMemoriesByDate(selectedDateStr);
   
   const handleMemoryClick = (memory: Memory) => {
     setSelectedMemory(memory);
@@ -87,7 +43,19 @@ const CalendarPage = () => {
   // Function to check if a date has memories
   const hasMemoriesOnDate = (date: Date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
-    return CALENDAR_MEMORIES.some(memory => memory.date === dateStr);
+    return memories.some(memory => memory.date === dateStr);
+  };
+  
+  // Open first memory on date selection if there are memories
+  const handleDateSelect = (date: Date | undefined) => {
+    setSelectedDate(date);
+    if (date) {
+      const dateStr = format(date, 'yyyy-MM-dd');
+      const dateMemories = getMemoriesByDate(dateStr);
+      if (dateMemories.length > 0) {
+        setSelectedMemory(dateMemories[0]);
+      }
+    }
   };
 
   return (
@@ -102,7 +70,7 @@ const CalendarPage = () => {
               <Calendar
                 mode="single"
                 selected={selectedDate}
-                onSelect={setSelectedDate}
+                onSelect={handleDateSelect}
                 className="border rounded-md bg-background p-3 pointer-events-auto"
                 modifiers={{
                   hasMemory: (date) => hasMemoriesOnDate(date),
