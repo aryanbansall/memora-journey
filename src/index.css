@@ -91,6 +91,18 @@
   .rdp-caption_label {
     @apply text-foreground font-medium;
   }
+
+  /* Make all calendar days visible with proper styling */
+  .rdp-day_today {
+    @apply font-bold text-primary border border-primary;
+  }
+
+  /* Make sure the hover card shows correctly */
+  .rdp-day_selected, 
+  .rdp-day_selected:focus-visible, 
+  .rdp-day_selected:hover {
+    @apply text-primary-foreground bg-primary;
+  }
 }
 
 @layer components {
@@ -134,6 +146,15 @@
   
   .rdp-table {
     @apply w-full;
+  }
+
+  /* Calendar hover styles */
+  .calendar-day-with-memory {
+    @apply relative font-medium text-foreground border border-primary bg-primary/10 rounded-md cursor-pointer;
+  }
+
+  .calendar-day-hover-card {
+    @apply absolute z-50 w-60 bg-card shadow-lg rounded-lg p-2 border;
   }
 }
 

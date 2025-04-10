@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { format, parse } from 'date-fns';
 import { CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -14,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Input } from '@/components/ui/input';
 import AddMemoryDialog from '@/components/AddMemoryDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -23,7 +23,6 @@ const CalendarPage = () => {
   const [jumpToDateInput, setJumpToDateInput] = useState('');
   const isMobile = useIsMobile();
   
-  // Group memories by date for the selected day
   const selectedDateStr = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
   const memoriesForSelectedDate = getMemoriesByDate(selectedDateStr);
   
@@ -51,19 +50,16 @@ const CalendarPage = () => {
     setSelectedMemory(memoriesForSelectedDate[prevIndex]);
   };
 
-  // Function to check if a date has memories
   const hasMemoriesOnDate = (date: Date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
     return memories.some(memory => memory.date === dateStr);
   };
   
-  // Get memories for a specific date
   const getMemoriesForDay = (date: Date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
     return getMemoriesByDate(dateStr);
   };
   
-  // Open first memory on date selection if there are memories
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
     if (date) {
@@ -77,15 +73,12 @@ const CalendarPage = () => {
     }
   };
 
-  // Jump to a specific date
   const jumpToDate = () => {
     if (jumpToDateInput) {
       try {
-        // Try to parse the date in YYYY-MM-DD format
         const date = parse(jumpToDateInput, 'yyyy-MM-dd', new Date());
         setSelectedDate(date);
         
-        // Check if there are memories on this date and open the first one
         const dateStr = format(date, 'yyyy-MM-dd');
         const dateMemories = getMemoriesByDate(dateStr);
         if (dateMemories.length > 0) {
@@ -99,7 +92,6 @@ const CalendarPage = () => {
     }
   };
 
-  // Navigate to previous or next month
   const navigateMonth = (direction: 'prev' | 'next') => {
     if (selectedDate) {
       const newDate = new Date(selectedDate);
@@ -112,46 +104,56 @@ const CalendarPage = () => {
     }
   };
 
-  // Navigate to today
   const goToToday = () => {
     setSelectedDate(new Date());
   };
 
-  // Custom component for calendar days to add memory hover cards
   const renderDay = (day: Date) => {
     const dayMemories = getMemoriesForDay(day);
-    if (dayMemories.length === 0) return null;
+    const hasMemories = dayMemories.length > 0;
     
     return (
-      <HoverCard>
-        <HoverCardTrigger asChild>
-          <div className="w-full h-full flex items-center justify-center font-medium">
+      <div className="w-full h-full flex items-center justify-center">
+        {hasMemories ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className={`w-full h-full flex items-center justify-center text-foreground font-medium ${hasMemories ? 'calendar-day-with-memory' : ''}`}>
+                  {format(day, 'd')}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="right" align="center" className="w-64 p-2">
+                <div className="text-sm font-medium mb-2">{format(day, 'MMMM d, yyyy')}</div>
+                <div className="text-xs text-muted-foreground mb-2">
+                  {dayMemories.length} {dayMemories.length === 1 ? 'memory' : 'memories'}
+                </div>
+                {dayMemories.length > 0 && (
+                  <div 
+                    className="w-full h-24 relative rounded-md overflow-hidden cursor-pointer"
+                    onClick={() => {
+                      setSelectedDate(day);
+                      setSelectedMemory(dayMemories[0]);
+                    }}
+                  >
+                    <img 
+                      src={dayMemories[0].thumbnail} 
+                      alt={dayMemories[0].title}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                      <p className="text-white text-xs font-medium">{dayMemories[0].title}</p>
+                    </div>
+                  </div>
+                )}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <div className="text-foreground">
             {format(day, 'd')}
           </div>
-        </HoverCardTrigger>
-        <HoverCardContent className="w-72 p-2">
-          <div className="text-sm font-medium mb-2">{format(day, 'MMMM d, yyyy')}</div>
-          <div className="text-xs text-muted-foreground mb-2">
-            {dayMemories.length} {dayMemories.length === 1 ? 'memory' : 'memories'}
-          </div>
-          {dayMemories.length > 0 && (
-            <div className="w-full h-24 relative rounded-md overflow-hidden cursor-pointer"
-                 onClick={() => {
-                   setSelectedDate(day);
-                   setSelectedMemory(dayMemories[0]);
-                 }}>
-              <img 
-                src={dayMemories[0].thumbnail} 
-                alt={dayMemories[0].title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                <p className="text-white text-xs font-medium">{dayMemories[0].title}</p>
-              </div>
-            </div>
-          )}
-        </HoverCardContent>
-      </HoverCard>
+        )}
+      </div>
     );
   };
 
@@ -161,9 +163,7 @@ const CalendarPage = () => {
         <h1 className="text-2xl md:text-3xl font-bold mb-6">Memory Calendar</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
-          {/* Calendar Section */}
           <div className="lg:col-span-1 bg-card p-4 rounded-lg shadow-sm">
-            {/* Calendar Navigation */}
             <div className="flex justify-between items-center mb-4">
               <Button 
                 variant="outline" 
@@ -201,17 +201,6 @@ const CalendarPage = () => {
                 selected={selectedDate}
                 onSelect={handleDateSelect}
                 className="border rounded-md bg-background w-full max-w-[350px]"
-                modifiers={{
-                  hasMemory: (date) => hasMemoriesOnDate(date),
-                }}
-                modifiersStyles={{
-                  hasMemory: { 
-                    fontWeight: 'bold',
-                    backgroundColor: 'var(--memora-purple-light)',
-                    color: 'var(--memora-purple)',
-                    borderRadius: '4px'
-                  }
-                }}
                 components={{
                   DayContent: ({ date }) => renderDay(date)
                 }}
@@ -232,9 +221,7 @@ const CalendarPage = () => {
             )}
           </div>
           
-          {/* Memories for Selected Date */}
           <div className="lg:col-span-2">
-            {/* Jump to Date Feature */}
             <Card className="p-4 mb-4">
               <div className="flex flex-col sm:flex-row items-center gap-2">
                 <Popover>
@@ -251,6 +238,16 @@ const CalendarPage = () => {
                       onSelect={handleDateSelect}
                       initialFocus
                       className="pointer-events-auto"
+                      components={{
+                        DayContent: ({ date }) => {
+                          const hasMemory = hasMemoriesOnDate(date);
+                          return (
+                            <div className={`w-full h-full flex items-center justify-center ${hasMemory ? 'font-bold text-primary' : 'text-foreground'}`}>
+                              {format(date, 'd')}
+                            </div>
+                          );
+                        }
+                      }}
                     />
                   </PopoverContent>
                 </Popover>
@@ -297,7 +294,6 @@ const CalendarPage = () => {
           onPrevious={handlePreviousMemory}
         />
 
-        {/* Add new memory button */}
         <Button
           className="fixed bottom-20 right-6 sm:bottom-6 sm:right-6 rounded-full h-14 w-14 shadow-lg z-10"
           onClick={() => setIsAddDialogOpen(true)}

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Layout from '@/components/Layout';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,10 +7,13 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { differenceInYears, parse } from 'date-fns';
+import { Camera } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const ProfilePage = () => {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [profile, setProfile] = useState({
     name: 'Sarah Johnson',
     email: 'sarah@example.com',
@@ -39,6 +42,30 @@ const ProfilePage = () => {
     setIsEditing(!isEditing);
   };
 
+  const handleAvatarClick = () => {
+    if (isEditing && fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setProfile({
+          ...profile,
+          avatarUrl: e.target?.result as string,
+        });
+      };
+      reader.readAsDataURL(file);
+      toast({
+        description: "Profile picture updated!",
+        duration: 1500
+      });
+    }
+  };
+
   return (
     <Layout>
       <div className="max-w-4xl mx-auto space-y-6">
@@ -56,17 +83,40 @@ const ProfilePage = () => {
           </CardHeader>
           <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex flex-col items-center space-y-4 col-span-1">
-              <Avatar className="w-32 h-32 border-4 border-background">
-                <AvatarImage src={profile.avatarUrl} alt={profile.name} />
-                <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
-              </Avatar>
+              <div className="relative">
+                <Avatar 
+                  className={`w-32 h-32 border-4 border-background ${isEditing ? 'cursor-pointer' : ''}`}
+                  onClick={handleAvatarClick}
+                >
+                  <AvatarImage src={profile.avatarUrl} alt={profile.name} />
+                  <AvatarFallback>{profile.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                {isEditing && (
+                  <div 
+                    className="absolute inset-0 bg-black/30 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                    onClick={handleAvatarClick}
+                  >
+                    <Camera className="h-8 w-8 text-white" />
+                  </div>
+                )}
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleFileChange} 
+                  accept="image/*"
+                  className="hidden"
+                  aria-label="Upload profile picture"
+                />
+              </div>
               {isEditing && (
-                <button 
-                  onClick={() => toast({ description: "Photo upload functionality coming in next update!", duration: 1500 })}
-                  className="text-sm text-primary underline"
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-sm"
+                  onClick={handleAvatarClick}
                 >
                   Change Photo
-                </button>
+                </Button>
               )}
             </div>
             
