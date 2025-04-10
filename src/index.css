@@ -81,6 +81,16 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading;
   }
+  
+  /* Make sure texts are visible in calendar */
+  .rdp-day {
+    @apply text-foreground font-medium;
+  }
+  
+  /* Ensure popover content appears above other elements */
+  .rdp-caption_label {
+    @apply text-foreground font-medium;
+  }
 }
 
 @layer components {
@@ -106,5 +116,42 @@
 
   .nav-link.active {
     @apply bg-secondary text-primary font-medium;
+  }
+  
+  /* Calendar day styling */
+  .rdp-day_today:not(.rdp-day_outside) {
+    @apply font-bold text-primary;
+  }
+  
+  /* Make calendar more responsive */
+  .rdp-months {
+    @apply w-full justify-center;
+  }
+  
+  .rdp-month {
+    @apply w-full max-w-[350px];
+  }
+  
+  .rdp-table {
+    @apply w-full;
+  }
+}
+
+/* Additional responsive fixes */
+@media (max-width: 640px) {
+  .rdp {
+    @apply max-w-full;
+  }
+  
+  .rdp-month {
+    @apply w-full;
+  }
+  
+  .rdp-table {
+    @apply w-full;
+  }
+  
+  .rdp-cell {
+    @apply text-center;
   }
 }

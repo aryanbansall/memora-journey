@@ -13,6 +13,7 @@ import { Card } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
 import AddMemoryDialog from '@/components/AddMemoryDialog';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -20,6 +21,7 @@ const CalendarPage = () => {
   const { memories, getMemoriesByDate } = useMemories();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [jumpToDateInput, setJumpToDateInput] = useState('');
+  const isMobile = useIsMobile();
   
   // Group memories by date for the selected day
   const selectedDateStr = selectedDate ? format(selectedDate, 'yyyy-MM-dd') : '';
@@ -155,27 +157,29 @@ const CalendarPage = () => {
 
   return (
     <Layout>
-      <div className="max-w-7xl mx-auto">
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-4">
         <h1 className="text-2xl md:text-3xl font-bold mb-6">Memory Calendar</h1>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
           {/* Calendar Section */}
-          <div className="md:col-span-1 bg-card p-4 rounded-lg shadow-sm">
+          <div className="lg:col-span-1 bg-card p-4 rounded-lg shadow-sm">
             {/* Calendar Navigation */}
             <div className="flex justify-between items-center mb-4">
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => navigateMonth('prev')}
+                className="text-xs sm:text-sm"
               >
-                <ChevronLeft className="h-4 w-4" />
-                Prev
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline">Prev</span>
               </Button>
               
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={goToToday}
+                className="text-xs sm:text-sm"
               >
                 Today
               </Button>
@@ -184,9 +188,10 @@ const CalendarPage = () => {
                 variant="outline" 
                 size="sm"
                 onClick={() => navigateMonth('next')}
+                className="text-xs sm:text-sm"
               >
-                Next
-                <ChevronRight className="h-4 w-4" />
+                <span className="hidden sm:inline">Next</span>
+                <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
             
@@ -195,7 +200,7 @@ const CalendarPage = () => {
                 mode="single"
                 selected={selectedDate}
                 onSelect={handleDateSelect}
-                className="border rounded-md bg-background p-3 pointer-events-auto"
+                className="border rounded-md bg-background w-full max-w-[350px]"
                 modifiers={{
                   hasMemory: (date) => hasMemoriesOnDate(date),
                 }}
@@ -228,10 +233,10 @@ const CalendarPage = () => {
           </div>
           
           {/* Memories for Selected Date */}
-          <div className="md:col-span-2">
+          <div className="lg:col-span-2">
             {/* Jump to Date Feature */}
             <Card className="p-4 mb-4">
-              <div className="flex flex-col sm:flex-row gap-2">
+              <div className="flex flex-col sm:flex-row items-center gap-2">
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button variant="outline" className="w-full sm:w-auto">
@@ -239,7 +244,7 @@ const CalendarPage = () => {
                       Jump to Date
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="p-0 w-auto">
+                  <PopoverContent className="p-0 w-auto" align="center">
                     <Calendar
                       mode="single"
                       selected={selectedDate}
@@ -250,7 +255,7 @@ const CalendarPage = () => {
                   </PopoverContent>
                 </Popover>
                 
-                <div className="flex flex-1 gap-2">
+                <div className="flex w-full sm:w-auto flex-1 gap-2">
                   <Input
                     type="text"
                     placeholder="YYYY-MM-DD"
@@ -264,7 +269,7 @@ const CalendarPage = () => {
             </Card>
             
             {memoriesForSelectedDate.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4">
                 {memoriesForSelectedDate.map((memory) => (
                   <MemoryCard 
                     key={memory.id} 
@@ -294,7 +299,7 @@ const CalendarPage = () => {
 
         {/* Add new memory button */}
         <Button
-          className="fixed bottom-20 right-6 sm:bottom-6 sm:right-6 rounded-full h-14 w-14 shadow-lg"
+          className="fixed bottom-20 right-6 sm:bottom-6 sm:right-6 rounded-full h-14 w-14 shadow-lg z-10"
           onClick={() => setIsAddDialogOpen(true)}
         >
           <span className="text-2xl">+</span>
